@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Define the structure for a cart item
 type CartProp = {
@@ -9,99 +9,111 @@ type CartProp = {
   quantity: number;
 };
 
-// Define the structure for a T-shirt item
+// Define the structure for a T-shirt item from the API
 type Tprop = {
-  shirt: string;
-  image: string;
+  id: number;
+  title: string;
+  description: string;
   price: number;
-  sizes: string[];
+  imageURL: string;
+  sizeOptions: { id: number; label: string }[];
 };
 
-// Home component that displays T-shirts and adds items to the cart
 export default function Home({
   addToCart,
 }: {
   addToCart: (item: CartProp) => void;
 }) {
-  // Sample data for T-shirts
-  const tshirtPrices: Tprop[] = [
-    {
-      shirt: "Classic Tee",
-      image: "whiteshirt.png",
-      price: 75,
-      sizes: ["L", "M", "S"],
-    },
-  ];
-
-  // State to track the selected size
+  const [product, setProduct] = useState<Tprop | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch the product information from the API
+  useEffect(() => {
+    fetch(
+      "https://3sb655pz3a.execute-api.ap-southeast-2.amazonaws.com/live/product"
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setProduct(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching product: {error}</div>;
+  }
+
+  if (!product) {
+    return <div>No product data available</div>;
+  }
 
   return (
-    <>
-      {tshirtPrices.map((tshirt, index) => (
-        <div key={index} className="row container">
-          {/*Main image for page */}
-          <div className="col-md-7 d-flex align-items-center justify-content-center mt-3">
-            <img src={tshirt.image} alt={tshirt.shirt} width={400} />
-          </div>
-          {/*Details and Add to Cart*/}
-          <div className="col-md-5 container mt-3">
-            <h3>{tshirt.shirt}</h3>
-            <hr />
-            <b>{tshirt.price}</b>
-            <hr />
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
-              ipsam quod optio voluptates nemo nisi doloribus explicabo,
-              distinctio recusandae, error in dicta alias dolorem consectetur
-              expedita quibusdam, doloremque asperiores animi!
-            </p>
-            <b className="text-secondary">
-              Sizes <span style={{ color: "#C90000" }}>*</span>
-            </b>
-            {/* Sizes selection */}
-            <div className="d-flex gap-2 mt-2 mb-4">
-              {tshirt.sizes.map((size, idx) => (
-                <button
-                  key={idx}
-                  className={`p-0.5 text-center ${
-                    selectedSize === size ? "btn-primary" : ""
-                  }`}
-                  style={{
-                    backgroundColor:
-                      selectedSize === size ? "#0d6efd" : "transparent",
-                    color: selectedSize === size ? "white" : "black",
-                    width: "40px",
-                    height: "40px",
-                    border: "1px solid #CCCCCC",
-                  }}
-                  // Select the size when button is clicked
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-            {/* Add to Cart button */}
+    <div className="row container">
+      <div className="col-md-6 d-flex align-items-center justify-content-center mt-3">
+        <img src={product.imageURL} alt={product.title} width={400} />
+      </div>
+      <div className="col-md-6 container mt-3">
+        <h3>{product.title}</h3>
+        <hr />
+        <b>${product.price}</b>
+        <hr />
+        <p>{product.description}</p>
+        <b className="text-secondary">
+          Sizes <span className="text-danger">*</span>
+        </b>
+        <div className="d-flex gap-2 mt-2 mb-4">
+          {product.sizeOptions.map((option) => (
             <button
-              className="border border-3 border-black p-2"
-              style={{ backgroundColor: "transparent" }}
-              onClick={() =>
-                selectedSize &&
-                addToCart({
-                  item: tshirt.shirt,
-                  image: tshirt.image,
-                  price: tshirt.price,
-                  size: selectedSize,
-                  quantity: 1,
-                })
-              }
+              key={option.id}
+              className={`border border-1 border-tertiary p-0.5 text-center ${
+                selectedSize === option.label ? "btn-primary" : ""
+              }`}
+              style={{
+                backgroundColor:
+                  selectedSize === option.label ? "#0d6efd" : "transparent",
+                color: selectedSize === option.label ? "white" : "black",
+                width: "40px",
+                height: "40px",
+                border: "1px solid #CCCCCC",
+              }}
+              onClick={() => setSelectedSize(option.label)}
             >
-              ADD TO CART
+              {option.label}
             </button>
-          </div>
+          ))}
         </div>
-      ))}
-    </>
+        <button
+          type="button"
+          className="btn btn-outline-dark p-2"
+          onClick={() =>
+            selectedSize &&
+            addToCart({
+              item: product.title,
+              image: product.imageURL,
+              price: product.price,
+              size: selectedSize,
+              quantity: 1,
+            })
+          }
+        >
+          ADD TO CART
+        </button>
+      </div>
+    </div>
   );
 }
