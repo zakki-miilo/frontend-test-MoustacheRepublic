@@ -1,30 +1,30 @@
-# React + TypeScript + Vite
+# Frontend Test - Moustache Republic
+Welcome to my frontend test project for Moustache Republic! I had a lot of fun making this! 😊
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Overview
+This project is a simple e-commerce-like website that showcases a T-shirt product with various features, such as:
 
-Currently, two official plugins are available:
+## Displaying the product information.
+- Selecting a size.
+- Adding the product to a cart.
+- Viewing the cart through a dropdown menu.
+## Technologies Used
+- React: A JavaScript library for building user interfaces.
+- Bootstrap: A popular CSS framework for responsive and mobile-first websites.
+- Vite: A fast build tool for modern web projects.
+- TypeScript: A typed superset of JavaScript that compiles to plain JavaScript.
+### Project Structure
+The project structure follows a typical React setup with the following key files:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- src/App.tsx: The main application component that manages routes and shared state.
+- src/components/Navbar.tsx: The component that displays the cart dropdown.
+- src/components/Home.tsx: The main page showcasing the T-shirt product.
+## Features
+- Responsive Design: The layout adapts to different screen sizes.
+- Cart Functionality: Items can be added to and displayed in the cart.
+- Dropdown Menu: The cart is accessible through a dropdown in the navbar.
+### Live Demo
+- You can check out the live demo of the project here: Frontend Test - Moustache Republic.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Acknowledgments
+Thank you to Moustache Republic for the opportunity to showcase my frontend skills.
